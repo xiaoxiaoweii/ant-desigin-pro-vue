@@ -1,0 +1,11 @@
+{
+  "name": "ant-desigin-pro-vue",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.2.0",
+    "@vue/cli-plugin-eslint": "^4.2.0",
+    "@vue/cli-plugin-unit-jest": "^4.2.0",
+    "@vue/cli-service": "^4.2.0"
+  }
+}
