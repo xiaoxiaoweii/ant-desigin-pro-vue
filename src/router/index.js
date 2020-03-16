@@ -131,13 +131,15 @@ const router = new VueRouter({
   routes
 });
 // 路由守卫 使用nprogress
-router.beforeEach((to, form, next) => {
-  Nprogress.start();
+router.beforeEach((to, from, next) => {
+  // 只有路由变化才会显示progress
+  if (to.path !== from.path) {
+    Nprogress.start();
+  }
   next();
 });
-router.afterEach((to, form, next) => {
+router.afterEach(() => {
   Nprogress.done();
-  next();
 });
 
 export default router;

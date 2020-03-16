@@ -1,6 +1,6 @@
 <template>
   <div>
-    Footer
+    Ant Design ©2020 Created by xiaoxiaoweii
   </div>
 </template>
 <script>
