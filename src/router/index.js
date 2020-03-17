@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
 import NotFound from "../views/404";
 import Nprogress from "nprogress";
 import "nprogress/nprogress.css";
@@ -10,6 +9,7 @@ const routes = [
   // 用户登录和注册页
   {
     path: "/user",
+    hideInMenu: true, //是否在显示在侧边菜单
     component: () =>
       import(/* webpackChunkName: "layout" */ "../layouts/UserLayout.vue"), // 异步加载
     children: [
@@ -44,6 +44,10 @@ const routes = [
       {
         path: "/dashboard",
         name: "dashboard",
+        meta: {
+          icon: "dashboard",
+          title: "仪表盘"
+        },
         component: {
           render: h => h("router-view")
         },
@@ -51,9 +55,13 @@ const routes = [
           {
             path: "/dashboard/analysis",
             name: "analysis",
+            meta: {
+              title: "分析页"
+            },
             component: () =>
               import(
-                /* webpackChunkName: "dashboard" */ "../views/Dashboard/Analysis"
+                /* webpackChunkName: "dashboard" */
+                "../views/Dashboard/Analysis"
               ) // 异步加载
           }
         ]
@@ -62,6 +70,10 @@ const routes = [
       {
         path: "/form",
         name: "form",
+        meta: {
+          icon: "form",
+          title: "表单"
+        },
         component: {
           render: h => h("router-view")
         },
@@ -69,12 +81,19 @@ const routes = [
           {
             path: "/form/basic-form",
             name: "basicform",
+            meta: {
+              title: "基础表单"
+            },
             component: () =>
               import(/* webpackChunkName: "form" */ "../views/Forms/BasicForm") // 异步加载
           },
           {
             path: "/form/step-form",
             name: "stepform",
+            hideChildrenInMenu: true,
+            meta: {
+              title: "分步表单"
+            },
             component: () =>
               import(/* webpackChunkName: "form" */ "../views/Forms/StepForm"), // 异步加载
             children: [
@@ -87,7 +106,8 @@ const routes = [
                 name: "info",
                 component: () =>
                   import(
-                    /* webpackChunkName: "form" */ "../views/Forms/StepForm/Step1"
+                    /* webpackChunkName: "form" */
+                    "../views/Forms/StepForm/Step1"
                   ) // 异步加载
               },
               {
@@ -95,7 +115,8 @@ const routes = [
                 name: "confirm",
                 component: () =>
                   import(
-                    /* webpackChunkName: "form" */ "../views/Forms/StepForm/Step2"
+                    /* webpackChunkName: "form" */
+                    "../views/Forms/StepForm/Step2"
                   ) // 异步加载
               },
               {
@@ -103,7 +124,8 @@ const routes = [
                 name: "result",
                 component: () =>
                   import(
-                    /* webpackChunkName: "form" */ "../views/Forms/StepForm/Step3"
+                    /* webpackChunkName: "form" */
+                    "../views/Forms/StepForm/Step3"
                   ) // 异步加载
               }
             ]
@@ -112,15 +134,10 @@ const routes = [
       }
     ]
   },
-
-  {
-    path: "/",
-    name: "Home",
-    component: Home
-  },
   {
     path: "*",
     name: "404",
+    hideInMenu: true, //是否在显示在侧边菜单
     component: NotFound
   }
 ];

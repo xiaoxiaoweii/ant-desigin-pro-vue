@@ -1,13 +1,12 @@
 <template>
-  <div :class="[`nav-theme-${navTheme}`, `nav-layout-${navLayout}`]">
+  <div>
     <!-- sider -->
     <a-layout id="components-layout-demo-side" style="min-height: 100vh">
       <a-layout-sider
-        v-if="navLayout === 1"
-        :theme="navTheme"
         collapsible
         v-model="collapsed"
         :trigger="null"
+        width="256px"
       >
         <div class="logo">xiaoxiaoweii</div>
         <SiderMenu />
@@ -31,33 +30,22 @@
         </a-layout-footer>
       </a-layout>
     </a-layout>
-    <SettingDrawer />
   </div>
 </template>
 <script>
 import Header from "../layouts/Header";
 import Footer from "../layouts/Footer";
 import SiderMenu from "../layouts/SiderMenu";
-import SettingDrawer from "../components/SettingDrawer";
 export default {
   data() {
     return {
       collapsed: false
     };
   },
-  computed: {
-    navTheme() {
-      return this.$route.query.navTheme || "1";
-    },
-    navLayout() {
-      return this.$route.query.navLayout || "1";
-    }
-  },
   components: {
     Header,
     Footer,
-    SiderMenu,
-    SettingDrawer
+    SiderMenu
   }
 };
 </script>
@@ -75,11 +63,5 @@ export default {
   line-height: 64px;
   text-align: center;
   overflow: hidden;
-}
-.nav-theme-1 >>> .logo {
-  color: #ffffff;
-}
-.nav-theme-2 >>> .logo {
-  color: #111111;
 }
 </style>
