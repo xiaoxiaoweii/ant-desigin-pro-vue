@@ -24,6 +24,7 @@
 
 <script>
 import SubMenu from "../layouts/SubMenu";
+import { check } from "../utils/auth";
 export default {
   components: {
     "sub-menu": SubMenu
@@ -48,12 +49,17 @@ export default {
   methods: {
     getMenuData(routes = [], parentKeys = [], SelectedKeys) {
       const menuData = [];
-      routes.forEach(item => {
+      for (let item of routes) {
+        // 判断是否meta meta是否有用户信息 用户信息校验是否能通过 校验不通过直接break
+        if (item.meta && item.meta.authority && !check(item.meta.authority)) {
+          break;
+        }
+        // 用户有权限则继续执行显示侧边栏菜单
         if (item.name && !item.hideInMenu) {
           this.OpenKeysMap[item.path] = parentKeys;
           this.SelectedKeysMap[item.path] = [SelectedKeys || item.path];
           const newItem = { ...item }; // 解构数组 不改变原数据
-          delete newItem.children; //删除\子路由
+          delete newItem.children; //删除子路由
           if (item.children && !item.hideChildrenInMenu) {
             newItem.children = this.getMenuData(item.children, [
               ...parentKeys,
@@ -77,7 +83,7 @@ export default {
             ...this.getMenuData(item.children, [...parentKeys, item.path])
           );
         }
-      });
+      }
       return menuData;
     }
   }

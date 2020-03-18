@@ -1,8 +1,12 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import findLast from "lodash/findLast";
+import { notification } from "ant-design-vue";
 import NotFound from "../views/404";
-import Nprogress from "nprogress";
+import Forbidden from "../views/403";
+import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import { check, isLogin } from "../utils/auth";
 Vue.use(VueRouter);
 
 const routes = [
@@ -33,6 +37,10 @@ const routes = [
   },
   {
     path: "/",
+    meta: {
+      // user和admin都可以访问
+      authority: ["user", "admin"]
+    },
     component: () =>
       import(/* webpackChunkName: "layout" */ "../layouts/BasicLayout.vue"), // 异步加载
     children: [
@@ -72,7 +80,9 @@ const routes = [
         name: "form",
         meta: {
           icon: "form",
-          title: "表单"
+          title: "表单",
+          // 只允许admin访问
+          authority: ["admin"]
         },
         component: {
           render: h => h("router-view")
@@ -134,11 +144,19 @@ const routes = [
       }
     ]
   },
+  // 404
   {
     path: "*",
     name: "404",
-    hideInMenu: true, //是否在显示在侧边菜单
+    hideInMenu: true, //是否显示在侧边菜单
     component: NotFound
+  },
+  // 403
+  {
+    path: "*",
+    name: "403",
+    hideInMenu: true, //是否显示在侧边菜单
+    component: Forbidden
   }
 ];
 
@@ -151,12 +169,35 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   // 只有路由变化才会显示progress
   if (to.path !== from.path) {
-    Nprogress.start();
+    NProgress.start();
+  }
+  const record = findLast(to.matched, record => record.meta.authority);
+  // 判断是否有用户 用户是否有权限
+  if (record && !check(record.meta.authority)) {
+    // 判断是否登录 当前不在登录页
+    if (!isLogin() && to.path !== "/user/login") {
+      // 没登录 直接跳到登录页
+      next({
+        path: "/user/login"
+      });
+      // 已经登录 用户没有权限  并且当前不在403页面
+    } else if (to.path !== "/403") {
+      // 已经登录 跳到403页面 弹出错误提示
+      notification.error({
+        message: "403",
+        description: "你没有权限访问,请联系管理员咨询"
+      });
+      next({
+        path: "/403"
+      });
+    }
+    // 不会进入afterEach 所以需要将nprogress重置
+    NProgress.done();
   }
   next();
 });
 router.afterEach(() => {
-  Nprogress.done();
+  NProgress.done();
 });
 
 export default router;
