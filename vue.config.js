@@ -16,7 +16,8 @@ module.exports = {
           if (req.headers.accept.indexOf("html") !== -1) {
             console.log("Skipping proxy for browser request.");
             return "/index.html";
-          } else {
+            // 判断是否为no mock模式
+          } else if (process.env.MOCK !== "none") {
             // 分割字符 重组api请求mock名称
             const name = req.path
               .split("/api/")[1]
