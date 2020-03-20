@@ -1,6 +1,6 @@
 <template>
   <div>
-    Step3 第三步
+    操作成功, 预计两小时到账
   </div>
 </template>
 <script>
