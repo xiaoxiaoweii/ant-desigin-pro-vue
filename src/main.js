@@ -14,7 +14,8 @@ import {
   Radio,
   Menu,
   Form,
-  Input
+  Input,
+  Select
 } from "ant-design-vue"; // 引入ant-design中的button组件
 import Authorized from "../src/components/Authorized.vue";
 import Auth from "../src/directives/auth";
@@ -29,6 +30,7 @@ Vue.use(Radio); //全局注册Radio组件
 Vue.use(Menu); //全局注册Menu组件
 Vue.use(Form); //全局注册Form组件
 Vue.use(Input); //全局注册Input组件
+Vue.use(Select); //全局注册Select组件
 Vue.component("Authority", Authorized); //全局注册用户权限组件
 Vue.use(Auth); // 全局注册权限指令
 
