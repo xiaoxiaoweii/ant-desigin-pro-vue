@@ -34,6 +34,14 @@ Vue.use(Select); //全局注册Select组件
 Vue.component("Authority", Authorized); //全局注册用户权限组件
 Vue.use(Auth); // 全局注册权限指令
 
+// 引入外部图标
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: "//at.alicdn.com/t/font_1704713_z8elfkow97i.js" // 在 iconfont.cn 上生成
+});
+
+// 全局注册自定义图标组件
+Vue.component("IconFont", IconFont);
+
 new Vue({
   router,
   store,
