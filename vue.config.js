@@ -1,4 +1,6 @@
 // vue.config.js
+const path = require("path");
+const webpack = require("webpack");
 module.exports = {
   css: {
     loaderOptions: {
@@ -7,24 +9,31 @@ module.exports = {
       }
     }
   },
+  // 按需加载
+  configureWebpack: {
+    plugins: [new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)],
+    resolve: {
+      alias: {
+        "@ant-design/icons/lib/dist$": path.resolve(__dirname, "./src/icons.js")
+      }
+    }
+  },
   // svgLoader
   chainWebpack: config => {
-    const svgRule = config.module.rule('svg')
+    const svgRule = config.module.rule("svg");
 
     // 清除已有的所有 loader。
     // 如果你不这样做，接下来的 loader 会附加在该规则现有的 loader 之后。
-    svgRule.uses.clear()
+    svgRule.uses.clear();
     // 添加要替换的 loader
-    svgRule
-      .use('vue-svg-loader')
-      .loader('vue-svg-loader')
+    svgRule.use("vue-svg-loader").loader("vue-svg-loader");
   },
   // api代理
   devServer: {
     proxy: {
       "/api": {
         target: "http://localhost:3000",
-        bypass: function (req, res) {
+        bypass: function(req, res) {
           if (req.headers.accept.indexOf("html") !== -1) {
             console.log("Skipping proxy for browser request.");
             return "/index.html";

@@ -2,7 +2,10 @@
   <div ref="chartDom" style="height: 400px"></div>
 </template>
 <script>
-import echarts from "echarts";
+// 按需引入
+import echarts from "echarts/lib/echarts";
+import "echarts/lib/chart/bar";
+import "echarts/lib/component/title";
 import debounce from "lodash/debounce";
 import { addListener, removeListener } from "resize-detector";
 export default {
