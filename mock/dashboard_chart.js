@@ -1,9 +1,8 @@
-// 根据请求的方法返回值
 function chart(method) {
   let res = null;
   switch (method) {
     case "GET":
-      res = [20, 40, 78, 40, 30, 48];
+      res = [100, 40, 78, 10, 30, 48];
       break;
     default:
       res = null;

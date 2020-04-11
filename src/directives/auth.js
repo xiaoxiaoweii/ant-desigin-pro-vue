@@ -1,6 +1,5 @@
 import { check } from "../utils/auth";
 
-// 直接全局注册Vue组件 权限指令
 function install(Vue, options = {}) {
   Vue.directive(options.name || "auth", {
     inserted(el, binding) {
@@ -10,4 +9,5 @@ function install(Vue, options = {}) {
     }
   });
 }
+
 export default { install };

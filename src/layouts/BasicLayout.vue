@@ -1,18 +1,18 @@
 <template>
-  <div>
-    <!-- sider -->
-    <a-layout id="components-layout-demo-side" style="min-height: 100vh">
+  <div :class="[`nav-theme-${navTheme}`, `nav-layout-${navLayout}`]">
+    <a-layout style="min-height: 100vh">
       <a-layout-sider
+        v-if="navLayout === 'left'"
+        :theme="navTheme"
+        :trigger="null"
         collapsible
         v-model="collapsed"
-        :trigger="null"
         width="256px"
       >
         <div class="logo">xiaoxiaoweii</div>
-        <SiderMenu />
+        <SiderMenu :theme="navTheme" />
       </a-layout-sider>
       <a-layout>
-        <!-- header -->
         <a-layout-header style="background: #fff; padding: 0">
           <a-icon
             v-auth="['admin']"
@@ -22,7 +22,6 @@
           ></a-icon>
           <Header />
         </a-layout-header>
-        <!-- content -->
         <a-layout-content style="margin: 0 16px">
           <router-view></router-view>
         </a-layout-content>
@@ -31,25 +30,40 @@
         </a-layout-footer>
       </a-layout>
     </a-layout>
+    <Authorized :authority="['admin']">
+      <SettingDrawer />
+    </Authorized>
   </div>
 </template>
+
 <script>
-import Header from "../layouts/Header";
-import Footer from "../layouts/Footer";
-import SiderMenu from "../layouts/SiderMenu";
+import Header from "./Header";
+import Footer from "./Footer";
+import SiderMenu from "./SiderMenu";
+import SettingDrawer from "../components/SettingDrawer";
 export default {
   data() {
     return {
       collapsed: false
     };
   },
+  computed: {
+    navTheme() {
+      return this.$route.query.navTheme || "dark";
+    },
+    navLayout() {
+      return this.$route.query.navLayout || "left";
+    }
+  },
   components: {
     Header,
     Footer,
-    SiderMenu
+    SiderMenu,
+    SettingDrawer
   }
 };
 </script>
+
 <style scoped>
 .trigger {
   padding: 0 20px;
@@ -64,5 +78,8 @@ export default {
   line-height: 64px;
   text-align: center;
   overflow: hidden;
+}
+.nav-theme-dark >>> .logo {
+  color: #ffffff;
 }
 </style>

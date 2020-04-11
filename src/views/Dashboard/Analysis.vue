@@ -1,32 +1,30 @@
 <template>
   <div>
-    Analysis 分析页
+    {{ $t("message")["app.dashboard.analysis.timeLabel"] }} :
+    <a-date-picker></a-date-picker>
     <Chart :option="chartOption" style="height: 400px" />
+    <pre v-highlightjs="chartCode"><code class="html"></code></pre>
   </div>
 </template>
+
 <script>
 import request from "../../utils/request";
 import Chart from "../../components/Chart";
+import chartCode from "!!raw-loader!../../components/Chart";
 export default {
   data() {
     return {
-      // 图标信息
-      chartOption: {}
+      chartOption: {},
+      chartCode
     };
   },
   mounted() {
     this.getChartData();
     this.interval = setInterval(() => {
       this.getChartData();
-      // // echarts chartOption 赋予为100以内的随机数
-      // this.chartOption.series[0].data = this.chartOption.series[0].data.map(
-      //   () => random(100)
-      // );
-      // this.chartOption = { ...this.chartOption };
     }, 3000);
   },
   methods: {
-    // axios获取chartOption数据
     getChartData() {
       request({
         url: "/api/dashboard/chart",
@@ -35,7 +33,7 @@ export default {
       }).then(response => {
         this.chartOption = {
           title: {
-            text: "ECharts 入门示例"
+            text: "ECharts 简单使用"
           },
           tooltip: {},
           xAxis: {
@@ -54,7 +52,6 @@ export default {
     }
   },
   beforeDestroy() {
-    // 销毁interval
     clearInterval(this.interval);
   },
   components: {
@@ -62,4 +59,5 @@ export default {
   }
 };
 </script>
-<style scoped></style>
+
+<style></style>

@@ -1,11 +1,13 @@
 import Vue from "vue";
+import VueI18n from "vue-i18n";
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
-// import Antd from 'ant-design-vue' // 引入ant-design所有组件
-// import 'ant-design-vue/dist/antd.less'; // 引入ant-design所有样式文件
-// import  Button  from 'ant-design-vue/lib/button'; // 引入ant-design中的button组件
-import "ant-design-vue/lib/button/style"; // 引入ant-design所有样式文件
+import store from "./store/index.js";
+import enUS from "./locale/enUS";
+import zhCN from "./locale/zhCN";
+import queryString from "query-string";
+import VueHighlightJS from "vue-highlightjs";
+
 import {
   Button,
   Layout,
@@ -15,34 +17,50 @@ import {
   Menu,
   Form,
   Input,
-  Select
-} from "ant-design-vue"; // 引入ant-design中的button组件
-import Authorized from "../src/components/Authorized.vue";
-import Auth from "../src/directives/auth";
+  Select,
+  LocaleProvider,
+  Dropdown,
+  DatePicker
+} from "ant-design-vue";
+import Authorized from "./components/Authorized";
+import Auth from "./directives/auth";
+import "highlight.js/styles/github.css";
 
 Vue.config.productionTip = false;
 
-Vue.use(Button); //全局注册button组件
-Vue.use(Layout); //全局注册Layout组件
-Vue.use(Icon); //全局注册Icon组件
-Vue.use(Drawer); //全局注册Drawer组件
-Vue.use(Radio); //全局注册Radio组件
-Vue.use(Menu); //全局注册Menu组件
-Vue.use(Form); //全局注册Form组件
-Vue.use(Input); //全局注册Input组件
-Vue.use(Select); //全局注册Select组件
-Vue.component("Authority", Authorized); //全局注册用户权限组件
-Vue.use(Auth); // 全局注册权限指令
+Vue.use(Button);
+Vue.use(Layout);
+Vue.use(Icon);
+Vue.use(Drawer);
+Vue.use(Radio);
+Vue.use(Menu);
+Vue.use(Form);
+Vue.use(Input);
+Vue.use(Select);
+Vue.use(LocaleProvider);
+Vue.use(Dropdown);
+Vue.use(DatePicker);
+Vue.component("Authorized", Authorized);
+Vue.use(Auth);
+Vue.use(VueI18n);
+Vue.use(VueHighlightJS);
 
-// 引入外部图标
-const IconFont = Icon.createFromIconfontCN({
-  scriptUrl: "//at.alicdn.com/t/font_1704713_z8elfkow97i.js" // 在 iconfont.cn 上生成
+const i18n = new VueI18n({
+  locale: queryString.parse(location.search).locale || "zhCN",
+  messages: {
+    zhCN: { message: zhCN },
+    enUS: { message: enUS }
+  }
 });
 
-// 全局注册自定义图标组件
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: "//at.alicdn.com/t/font_1154049_w87h4oeytph.js" // 在 iconfont.cn 上生成
+});
+
 Vue.component("IconFont", IconFont);
 
 new Vue({
+  i18n,
   router,
   store,
   render: h => h(App)

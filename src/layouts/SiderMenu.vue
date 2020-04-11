@@ -1,17 +1,16 @@
 <template>
   <div style="width: 256px">
     <a-menu
-      :SelectedKeys="SelectedKeys"
-      :OpenKeys.sync="OpenKeys"
+      :selectedKeys="selectedKeys"
+      :openKeys.sync="openKeys"
       mode="inline"
-      theme="dark"
-      :inlineCollapsed="collapsed"
+      :theme="theme"
     >
       <template v-for="item in menuData">
         <a-menu-item
           v-if="!item.children"
           :key="item.path"
-          @click="() => $router.push({ path: item.path })"
+          @click="() => $router.push({ path: item.path, query: $route.query })"
         >
           <a-icon v-if="item.meta.icon" :type="item.meta.icon" />
           <span>{{ item.meta.title }}</span>
@@ -23,43 +22,54 @@
 </template>
 
 <script>
-import SubMenu from "../layouts/SubMenu";
+/*
+ * recommend SubMenu.vue https://github.com/vueComponent/ant-design-vue/blob/master/components/menu/demo/SubMenu.vue
+ * SubMenu1.vue https://github.com/vueComponent/ant-design-vue/blob/master/components/menu/demo/SubMenu1.vue
+ * */
+import SubMenu from "./SubMenu";
 import { check } from "../utils/auth";
 export default {
+  props: {
+    theme: {
+      type: String,
+      default: "dark"
+    }
+  },
   components: {
     "sub-menu": SubMenu
   },
   watch: {
     "$route.path": function(val) {
-      this.SelectedKeys = this.SelectedKeysMap[val];
-      this.OpenKeys = this.collapsed ? [] : this.OpenKeysMap[val];
+      this.selectedKeys = this.selectedKeysMap[val];
+      this.openKeys = this.collapsed ? [] : this.openKeysMap[val];
     }
   },
   data() {
-    this.SelectedKeysMap = {};
-    this.OpenKeysMap = {};
-    const menuData = this.getMenuData(this.$router.options.routes); // 拿到路由中的配置信息
+    this.selectedKeysMap = {};
+    this.openKeysMap = {};
+    const menuData = this.getMenuData(this.$router.options.routes);
     return {
       collapsed: false,
       menuData,
-      SelectedKeys: this.SelectedKeysMap[this.$route.path],
-      OpenKeys: this.collapsed ? [] : this.OpenKeysMap[this.$route.path]
+      selectedKeys: this.selectedKeysMap[this.$route.path],
+      openKeys: this.collapsed ? [] : this.openKeysMap[this.$route.path]
     };
   },
   methods: {
-    getMenuData(routes = [], parentKeys = [], SelectedKeys) {
+    toggleCollapsed() {
+      this.collapsed = !this.collapsed;
+    },
+    getMenuData(routes = [], parentKeys = [], selectedKey) {
       const menuData = [];
       for (let item of routes) {
-        // 判断是否meta meta是否有用户信息 用户信息校验是否能通过 校验不通过直接break
         if (item.meta && item.meta.authority && !check(item.meta.authority)) {
-          break;
+          continue;
         }
-        // 用户有权限则继续执行显示侧边栏菜单
         if (item.name && !item.hideInMenu) {
-          this.OpenKeysMap[item.path] = parentKeys;
-          this.SelectedKeysMap[item.path] = [SelectedKeys || item.path];
-          const newItem = { ...item }; // 解构数组 不改变原数据
-          delete newItem.children; //删除子路由
+          this.openKeysMap[item.path] = parentKeys;
+          this.selectedKeysMap[item.path] = [selectedKey || item.path];
+          const newItem = { ...item };
+          delete newItem.children;
           if (item.children && !item.hideChildrenInMenu) {
             newItem.children = this.getMenuData(item.children, [
               ...parentKeys,
@@ -68,12 +78,11 @@ export default {
           } else {
             this.getMenuData(
               item.children,
-              SelectedKeys ? parentKeys : [...parentKeys, item.path],
-              SelectedKeys || item.path
+              selectedKey ? parentKeys : [...parentKeys, item.path],
+              selectedKey || item.path
             );
           }
           menuData.push(newItem);
-          // 如果没有子路由也没有标志 直接渲染到侧边菜单
         } else if (
           !item.hideInMenu &&
           !item.hideChildrenInMenu &&
@@ -84,6 +93,7 @@ export default {
           );
         }
       }
+
       return menuData;
     }
   }

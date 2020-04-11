@@ -10,7 +10,6 @@ export default {
   },
   render(h, context) {
     const { props, scopedSlots } = context;
-    // 校验用户 校验通过返回插槽 没通过返回null
     return check(props.authority) ? scopedSlots.default() : null;
   }
 };

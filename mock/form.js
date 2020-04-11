@@ -1,5 +1,4 @@
-// 根据请求的方法返回值
-function chart(method) {
+function form(method) {
   let res = null;
   switch (method) {
     case "POST":
@@ -11,4 +10,4 @@ function chart(method) {
   return res;
 }
 
-module.exports = chart;
+module.exports = form;
